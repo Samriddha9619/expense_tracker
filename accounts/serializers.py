@@ -48,5 +48,47 @@ class UserRegiSerializer(serializers.ModelSerializer):
         user.save()
         return user
     
-    #loginserializer
-    #password_change_serializer
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        user = authenticate(email=email, password=password)
+        if email and password:
+            user = authenticate(username=email, password=password)
+            if not user:
+                raise serializers.ValidationError("Invalid credentials")
+            attrs['user'] = user
+            return attrs
+        else:
+            raise serializers.ValidationError("Email and password are required fields.")
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    new_password = serializers.CharField(write_only=True, style={'input_type': 'password'})
+    new_password_confirm = serializers.CharField(write_only=True, style={'input_type': 'password'})
+
+
+    def validate_old_password(self, value):
+        user= self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("Old password is not correct.")
+        return value
+    
+    def validate(self, attrs):
+        new_password = attrs.get('new_password')
+        new_password_confirm = attrs.get('new_password_confirm')
+        if new_password != new_password_confirm:
+            raise serializers.ValidationError("New password and confirm password do not match.")
+        try:
+            validate_password(new_password, self.context['request'].user)
+        except ValidationError as e:
+            raise serializers.ValidationError({"new_password": e.messages})
+        return attrs
+    
+    def save(self):
+        user=self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user
