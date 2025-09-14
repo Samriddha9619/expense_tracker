@@ -5,9 +5,27 @@ from django.contrib.auth import get_user_model
 
 User =get_user_model()
 
+# Transaction type choices
+TRANSACTION_TYPES = [
+    ('income', 'Income'),
+    ('expense', 'Expense'),
+    ('transfer', 'Transfer'),
+]
+
+# Account type choices
+ACCOUNT_TYPES = [
+    ('checking', 'Checking'),
+    ('savings', 'Savings'),
+    ('credit_card', 'Credit Card'),
+    ('cash', 'Cash'),
+    ('investment', 'Investment'),
+    ('other', 'Other'),
+]
+
 class Category(models.Model):
     name=models.CharField(max_length=100)
     description= models.TextField(blank=True)
+    color=models.CharField(max_length=7, default='#007bff')  # Hex color code
     user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='categories')
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
@@ -17,7 +35,7 @@ class Category(models.Model):
 
 class Account(models.Model):
     name= models.CharField(max_length=100)
-    account_type=models.CharField(max_length=20)
+    account_type=models.CharField(max_length=20, choices=ACCOUNT_TYPES)
     balance= models.DecimalField(max_digits=12,decimal_places=2,default=0.00)
     description=models.TextField(blank=True)
     user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='accounts')
@@ -29,7 +47,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')
     account = models.ForeignKey(Account, on_delete=models.CASCADE, related_name='transactions')
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
-    transaction_type = models.CharField(max_length=20,)# choices=TRANSACTION_TYPES)
+    transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
     amount = models.DecimalField(max_digits=12, decimal_places=2)
     description = models.CharField(max_length=255)
     notes = models.TextField(blank=True)
