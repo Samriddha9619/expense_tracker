@@ -4,7 +4,7 @@ import { authAPI } from './api/auth';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Navbar from './components/Layout/Navbar';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/Expenses/Dashboard';
 import Transactions from './components/Expenses/Transactions';
 import Accounts from './components/Expenses/Accounts';
 import Categories from './components/Expenses/Categories';

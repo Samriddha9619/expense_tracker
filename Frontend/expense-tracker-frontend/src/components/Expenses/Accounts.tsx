@@ -185,7 +185,7 @@ const Accounts: React.FC = () => {
                   {account.account_type_display} • {account.description || 'No description'}
                 </p>
                 <div style={{ fontSize: '14px', color: '#666' }}>
-                  <span>Balance: ${account.balance}</span>
+                  <span>Balance: ₹{account.balance}</span>
                   <span style={{ marginLeft: '20px' }}>Transactions: {account.transaction_count}</span>
                   <span style={{ marginLeft: '20px' }}>Status: {account.is_active ? 'Active' : 'Inactive'}</span>
                 </div>

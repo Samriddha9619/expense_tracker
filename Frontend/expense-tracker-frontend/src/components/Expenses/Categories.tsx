@@ -172,7 +172,7 @@ const Categories: React.FC = () => {
                 </p>
                 <div style={{ fontSize: '14px', color: '#666' }}>
                   <span>Transactions: {category.transaction_count}</span>
-                  <span style={{ marginLeft: '20px' }}>Total Spent: ${category.total_spent}</span>
+                  <span style={{ marginLeft: '20px' }}>Total Spent: ₹{category.total_spent}</span>
                 </div>
               </div>
               <div>

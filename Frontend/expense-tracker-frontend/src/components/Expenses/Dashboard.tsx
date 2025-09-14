@@ -18,9 +18,10 @@ const Dashboard: React.FC = () => {
         expensesAPI.getAccounts(),
       ]);
       setSummary(summaryData);
-      setAccounts(accountsData);
+      setAccounts(Array.isArray(accountsData) ? accountsData : []);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      setAccounts([]);
     } finally {
       setLoading(false);
     }
@@ -47,7 +48,7 @@ const Dashboard: React.FC = () => {
           }}>
             <h3 style={{ margin: '0 0 10px 0', color: '#155724' }}>Total Income</h3>
             <p style={{ margin: '0', fontSize: '32px', fontWeight: 'bold', color: '#155724' }}>
-              ${summary.total_income.toFixed(2)}
+              ₹{summary.total_income.toFixed(2)}
             </p>
             <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#155724' }}>
               {summary.income_count} transactions
@@ -62,7 +63,7 @@ const Dashboard: React.FC = () => {
           }}>
             <h3 style={{ margin: '0 0 10px 0', color: '#721c24' }}>Total Expenses</h3>
             <p style={{ margin: '0', fontSize: '32px', fontWeight: 'bold', color: '#721c24' }}>
-              ${summary.total_expenses.toFixed(2)}
+              ₹{summary.total_expenses.toFixed(2)}
             </p>
             <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#721c24' }}>
               {summary.expense_count} transactions
@@ -87,7 +88,7 @@ const Dashboard: React.FC = () => {
               fontWeight: 'bold', 
               color: summary.net_amount >= 0 ? '#155724' : '#721c24' 
             }}>
-              ${summary.net_amount.toFixed(2)}
+              ₹{summary.net_amount.toFixed(2)}
             </p>
             <p style={{ 
               margin: '5px 0 0 0', 
@@ -144,7 +145,7 @@ const Dashboard: React.FC = () => {
                       {account.account_type_display}
                     </p>
                     <div style={{ fontSize: '14px', color: '#666' }}>
-                      <div>Balance: <strong>${account.balance}</strong></div>
+                      <div>Balance: <strong>₹{account.balance}</strong></div>
                       <div>Transactions: {account.transaction_count}</div>
                       <div>Status: {account.is_active ? 'Active' : 'Inactive'}</div>
                     </div>

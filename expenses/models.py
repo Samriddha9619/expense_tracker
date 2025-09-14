@@ -5,14 +5,12 @@ from django.contrib.auth import get_user_model
 
 User =get_user_model()
 
-# Transaction type choices
 TRANSACTION_TYPES = [
     ('income', 'Income'),
     ('expense', 'Expense'),
     ('transfer', 'Transfer'),
 ]
 
-# Account type choices
 ACCOUNT_TYPES = [
     ('checking', 'Checking'),
     ('savings', 'Savings'),
@@ -30,7 +28,7 @@ class Category(models.Model):
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
-    #class Meta:
+    
 
 
 class Account(models.Model):
@@ -42,6 +40,18 @@ class Account(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def calculate_balance(self):
+        """Calculate the current balance based on transactions"""
+        from django.db.models import Sum
+        income = self.transactions.filter(transaction_type='income').aggregate(Sum('amount'))['amount__sum'] or 0
+        expenses = self.transactions.filter(transaction_type='expense').aggregate(Sum('amount'))['amount__sum'] or 0
+        return float(income - expenses)
+    
+    def save(self, *args, **kwargs):
+        # Update balance when saving
+        self.balance = self.calculate_balance()
+        super().save(*args, **kwargs)
 
 class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='transactions')

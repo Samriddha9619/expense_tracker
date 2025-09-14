@@ -123,19 +123,19 @@ const Transactions: React.FC = () => {
           <div style={{ padding: '15px', backgroundColor: '#d4edda', borderRadius: '4px' }}>
             <h4 style={{ margin: '0 0 5px 0', color: '#155724' }}>Total Income</h4>
             <p style={{ margin: '0', fontSize: '24px', fontWeight: 'bold', color: '#155724' }}>
-              ${summary.total_income.toFixed(2)}
+              ₹{summary.total_income.toFixed(2)}
             </p>
           </div>
           <div style={{ padding: '15px', backgroundColor: '#f8d7da', borderRadius: '4px' }}>
             <h4 style={{ margin: '0 0 5px 0', color: '#721c24' }}>Total Expenses</h4>
             <p style={{ margin: '0', fontSize: '24px', fontWeight: 'bold', color: '#721c24' }}>
-              ${summary.total_expenses.toFixed(2)}
+              ₹{summary.total_expenses.toFixed(2)}
             </p>
           </div>
           <div style={{ padding: '15px', backgroundColor: summary.net_amount >= 0 ? '#d4edda' : '#f8d7da', borderRadius: '4px' }}>
             <h4 style={{ margin: '0 0 5px 0', color: summary.net_amount >= 0 ? '#155724' : '#721c24' }}>Net Amount</h4>
             <p style={{ margin: '0', fontSize: '24px', fontWeight: 'bold', color: summary.net_amount >= 0 ? '#155724' : '#721c24' }}>
-              ${summary.net_amount.toFixed(2)}
+              ₹{summary.net_amount.toFixed(2)}
             </p>
           </div>
           <div style={{ padding: '15px', backgroundColor: '#d1ecf1', borderRadius: '4px' }}>
@@ -316,7 +316,7 @@ const Transactions: React.FC = () => {
                   {transaction.account_name} • {transaction.category_name || 'No Category'} • {transaction.transaction_type_display}
                 </p>
                 <div style={{ fontSize: '14px', color: '#666' }}>
-                  <span>Amount: ${transaction.amount}</span>
+                  <span>Amount: ₹{transaction.amount}</span>
                   <span style={{ marginLeft: '20px' }}>Date: {transaction.date}</span>
                   {transaction.notes && (
                     <div style={{ marginTop: '5px' }}>

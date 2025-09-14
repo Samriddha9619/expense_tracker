@@ -5,7 +5,7 @@ export const expensesAPI = {
   // Categories
   getCategories: async (): Promise<Category[]> => {
     const response = await api.get('/categories/');
-    return response.data;
+    return response.data.results || response.data;
   },
 
   createCategory: async (data: { name: string; description?: string; color?: string }): Promise<Category> => {
@@ -30,7 +30,7 @@ export const expensesAPI = {
   // Accounts
   getAccounts: async (): Promise<Account[]> => {
     const response = await api.get('/accounts/');
-    return response.data;
+    return response.data.results || response.data;
   },
 
   createAccount: async (data: {
@@ -64,7 +64,7 @@ export const expensesAPI = {
   // Transactions
   getTransactions: async (): Promise<Transaction[]> => {
     const response = await api.get('/transactions/');
-    return response.data;
+    return response.data.results || response.data;
   },
 
   createTransaction: async (data: {
