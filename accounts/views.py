@@ -26,7 +26,10 @@ def register(request):
             'message': 'User registered successfully!'
         },status=status.HTTP_201_CREATED)
     print(f"Registration validation errors: {serializer.errors}")
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({
+        'errors': serializer.errors,
+        'message': 'Registration failed. Please check the errors.'
+    }, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])

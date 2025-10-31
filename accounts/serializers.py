@@ -13,6 +13,7 @@ class UserSerializers(serializers.ModelSerializer):
 class UserRegiSerializer(serializers.ModelSerializer):
     password= serializers.CharField(write_only=True,style={'input_type':'password'})
     password_confirm= serializers.CharField(write_only=True,style={'input_type':'password'})
+    phone = serializers.CharField(required=False, allow_blank=True, max_length=15)
 
     class Meta:
         model = User
