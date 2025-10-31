@@ -12,6 +12,7 @@ from .serializers import (UserSerializers,LoginSerializer,UserRegiSerializer,Cha
 @permission_classes([AllowAny])
 
 def register(request):
+    print(f"Registration data received: {request.data}")
     serializer= UserRegiSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
@@ -24,6 +25,7 @@ def register(request):
             },
             'message': 'User registered successfully!'
         },status=status.HTTP_201_CREATED)
+    print(f"Registration validation errors: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
