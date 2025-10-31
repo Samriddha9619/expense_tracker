@@ -29,8 +29,18 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form submitted!');
+    console.log('Current form data:', formData);
+    
     setLoading(true);
     setError('');
+
+    // Validate all required fields
+    if (!formData.username || !formData.email || !formData.first_name || !formData.last_name || !formData.password || !formData.password_confirm) {
+      setError('Please fill in all required fields');
+      setLoading(false);
+      return;
+    }
 
     if (formData.password !== formData.password_confirm) {
       setError('Passwords do not match');
@@ -38,13 +48,38 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onSwitchToLogin }) => {
       return;
     }
 
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      setLoading(false);
+      return;
+    }
+
     try {
+      console.log('Attempting registration with:', { ...formData, password: '***', password_confirm: '***' });
       const response = await authAPI.register(formData);
+      console.log('Registration successful:', response);
       localStorage.setItem('access_token', response.tokens.access);
       localStorage.setItem('refresh_token', response.tokens.refresh);
       onRegister(response.user);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed');
+      console.error('Registration error:', err);
+      console.error('Error response:', err.response);
+      
+      // Handle different error formats
+      let errorMessage = 'Registration failed';
+      if (err.response?.data?.errors) {
+        // Backend returns errors object
+        const errors = err.response.data.errors;
+        errorMessage = Object.entries(errors)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(', ');
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

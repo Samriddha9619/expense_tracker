@@ -43,14 +43,19 @@ class Account(models.Model):
 
     def calculate_balance(self):
         """Calculate the current balance based on transactions"""
+        # Only calculate if account already exists (has an ID)
+        if not self.pk:
+            return 0.00
+        
         from django.db.models import Sum
         income = self.transactions.filter(transaction_type='income').aggregate(Sum('amount'))['amount__sum'] or 0
         expenses = self.transactions.filter(transaction_type='expense').aggregate(Sum('amount'))['amount__sum'] or 0
         return float(income - expenses)
     
     def save(self, *args, **kwargs):
-        # Update balance when saving
-        self.balance = self.calculate_balance()
+        # Only update balance if account already exists
+        if self.pk:
+            self.balance = self.calculate_balance()
         super().save(*args, **kwargs)
 
 class Transaction(models.Model):
