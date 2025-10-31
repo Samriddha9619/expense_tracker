@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+// Use production URL or fallback to local development
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://expense-tracker-t6ut.onrender.com/api';
 
 // Create axios instance
 const api = axios.create({
