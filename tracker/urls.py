@@ -17,8 +17,21 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path,include
+from django.http import JsonResponse
+
+def api_root(request):
+    return JsonResponse({
+        'message': 'Expense Tracker API',
+        'status': 'running',
+        'endpoints': {
+            'auth': '/api/auth/',
+            'expenses': '/api/',
+            'admin': '/admin/'
+        }
+    })
 
 urlpatterns = [
+    path('', api_root, name='api-root'),
     path("admin/", admin.site.urls),
     path('api/auth/',include('accounts.urls')),
     path('api/',include('expenses.urls')),
