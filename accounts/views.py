@@ -34,8 +34,10 @@ def register(request):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
+    print(f"Login attempt - Data received: {request.data}")
     serializer = LoginSerializer(data=request.data,context={'request':request})
     if serializer.is_valid():
+       print(f"Login successful for user: {serializer.validated_data['user'].email}")
        user =serializer.validated_data['user']
        refresh=RefreshToken.for_user(user)
        return Response({
@@ -46,6 +48,7 @@ def login(request):
               },
               'message': 'Login successful!'
        })
+    print(f"Login validation errors: {serializer.errors}")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])

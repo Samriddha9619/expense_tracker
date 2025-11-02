@@ -28,12 +28,28 @@ const Login: React.FC<LoginProps> = ({ onLogin, onSwitchToRegister }) => {
     setError('');
 
     try {
+      console.log('Attempting login with email:', formData.email);
       const response = await authAPI.login(formData);
+      console.log('Login successful:', response);
       localStorage.setItem('access_token', response.tokens.access);
       localStorage.setItem('refresh_token', response.tokens.refresh);
       onLogin(response.user);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      console.error('Login error:', err);
+      console.error('Error response:', err.response);
+      
+      let errorMessage = 'Login failed';
+      if (err.response?.data?.non_field_errors) {
+        errorMessage = err.response.data.non_field_errors[0];
+      } else if (err.response?.data?.detail) {
+        errorMessage = err.response.data.detail;
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

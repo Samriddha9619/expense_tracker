@@ -166,6 +166,11 @@ SIMPLE_JWT={
 
 AUTH_USER_MODEL = 'accounts.user'
 
+# Authentication backends
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # CORS settings for development
 CORS_ALLOW_ALL_ORIGINS = True  # Allow all origins in development
 CORS_ALLOW_CREDENTIALS = True

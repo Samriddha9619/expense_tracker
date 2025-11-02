@@ -55,7 +55,6 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-        user = authenticate(email=email, password=password)
         if email and password:
             user = authenticate(username=email, password=password)
             if not user:
