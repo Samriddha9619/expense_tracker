@@ -28,10 +28,6 @@ const Transactions: React.FC = () => {
   });
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, [filterCategory, filterType]);
-
   const fetchData = async () => {
     try {
       // Build query params for filtering
@@ -39,25 +35,32 @@ const Transactions: React.FC = () => {
       if (filterCategory) params.append('category', filterCategory);
       if (filterType) params.append('transaction_type', filterType);
       
-      const queryString = params.toString();
-      const transactionsUrl = queryString ? `/transactions/?${queryString}` : '/transactions/';
-      
+      const transactionsUrl = params.toString() ? `/transactions/?${params.toString()}` : undefined;
+
       const [transactionsData, accountsData, categoriesData, summaryData] = await Promise.all([
         expensesAPI.getTransactions(transactionsUrl),
         expensesAPI.getAccounts(),
         expensesAPI.getCategories(),
         expensesAPI.getTransactionSummary(),
       ]);
-      setTransactions(transactionsData);
-      setAccounts(accountsData);
-      setCategories(categoriesData);
+      setTransactions(Array.isArray(transactionsData) ? transactionsData : []);
+      setAccounts(Array.isArray(accountsData) ? accountsData : []);
+      setCategories(Array.isArray(categoriesData) ? categoriesData : []);
       setSummary(summaryData);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setTransactions([]);
+      setAccounts([]);
+      setCategories([]);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterCategory, filterType]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
