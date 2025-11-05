@@ -15,6 +15,8 @@ const Transactions: React.FC = () => {
   const [summary, setSummary] = useState<TransactionSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [filterCategory, setFilterCategory] = useState<string>('');
+  const [filterType, setFilterType] = useState<string>('');
   const [formData, setFormData] = useState({
     account: '',
     category: '',
@@ -28,12 +30,20 @@ const Transactions: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [filterCategory, filterType]);
 
   const fetchData = async () => {
     try {
+      // Build query params for filtering
+      const params = new URLSearchParams();
+      if (filterCategory) params.append('category', filterCategory);
+      if (filterType) params.append('transaction_type', filterType);
+      
+      const queryString = params.toString();
+      const transactionsUrl = queryString ? `/transactions/?${queryString}` : '/transactions/';
+      
       const [transactionsData, accountsData, categoriesData, summaryData] = await Promise.all([
-        expensesAPI.getTransactions(),
+        expensesAPI.getTransactions(transactionsUrl),
         expensesAPI.getAccounts(),
         expensesAPI.getCategories(),
         expensesAPI.getTransactionSummary(),
@@ -107,72 +117,70 @@ const Transactions: React.FC = () => {
     }
   };
 
-  if (loading) return <div>Loading transactions...</div>;
+  if (loading) return <div className="container">Loading transactions...</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Transactions</h2>
+    <div className="container">
+      <h2 className="pageTitle">Transactions</h2>
       
       {summary && (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-          gap: '15px', 
-          marginBottom: '20px' 
-        }}>
-          <div style={{ padding: '15px', backgroundColor: '#d4edda', borderRadius: '4px' }}>
-            <h4 style={{ margin: '0 0 5px 0', color: '#155724' }}>Total Income</h4>
-            <p style={{ margin: '0', fontSize: '24px', fontWeight: 'bold', color: '#155724' }}>
-              ₹{summary.total_income.toFixed(2)}
-            </p>
-          </div>
-          <div style={{ padding: '15px', backgroundColor: '#f8d7da', borderRadius: '4px' }}>
-            <h4 style={{ margin: '0 0 5px 0', color: '#721c24' }}>Total Expenses</h4>
-            <p style={{ margin: '0', fontSize: '24px', fontWeight: 'bold', color: '#721c24' }}>
-              ₹{summary.total_expenses.toFixed(2)}
-            </p>
-          </div>
-          <div style={{ padding: '15px', backgroundColor: summary.net_amount >= 0 ? '#d4edda' : '#f8d7da', borderRadius: '4px' }}>
-            <h4 style={{ margin: '0 0 5px 0', color: summary.net_amount >= 0 ? '#155724' : '#721c24' }}>Net Amount</h4>
-            <p style={{ margin: '0', fontSize: '24px', fontWeight: 'bold', color: summary.net_amount >= 0 ? '#155724' : '#721c24' }}>
-              ₹{summary.net_amount.toFixed(2)}
-            </p>
-          </div>
-          <div style={{ padding: '15px', backgroundColor: '#d1ecf1', borderRadius: '4px' }}>
-            <h4 style={{ margin: '0 0 5px 0', color: '#0c5460' }}>Total Transactions</h4>
-            <p style={{ margin: '0', fontSize: '24px', fontWeight: 'bold', color: '#0c5460' }}>
-              {summary.transaction_count}
-            </p>
-          </div>
+        <div className="grid grid-auto-sm" style={{marginBottom:16}}>
+          <div className="kpi kpi--success"><h4 className="cardTitle">Total Income</h4><div className="big">₹{summary.total_income.toFixed(2)}</div></div>
+          <div className="kpi kpi--danger"><h4 className="cardTitle">Total Expenses</h4><div className="big">₹{summary.total_expenses.toFixed(2)}</div></div>
+          <div className={summary.net_amount >= 0 ? 'kpi kpi--success' : 'kpi kpi--danger'}><h4 className="cardTitle">Net Amount</h4><div className="big">₹{summary.net_amount.toFixed(2)}</div></div>
+          <div className="kpi kpi--info"><h4 className="cardTitle">Total Transactions</h4><div className="big">{summary.transaction_count}</div></div>
         </div>
       )}
 
-      <button
-        onClick={() => setShowForm(!showForm)}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          marginBottom: '20px',
-        }}
-      >
+      {/* Filters */}
+      <div className="form" style={{marginBottom:16, padding:16}}>
+        <h3 className="cardTitle" style={{marginBottom:12}}>Filter Transactions</h3>
+        <div className="formRow">
+          <div>
+            <label>Filter by Category</label>
+            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)}>
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Filter by Type</label>
+            <select value={filterType} onChange={(e) => setFilterType(e.target.value)}>
+              <option value="">All Types</option>
+              {TRANSACTION_TYPES.map((type) => (
+                <option key={type.value} value={type.value}>{type.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {(filterCategory || filterType) && (
+          <button 
+            onClick={() => { setFilterCategory(''); setFilterType(''); }} 
+            className="btn btn--ghost" 
+            style={{marginTop:8}}
+          >
+            Clear Filters
+          </button>
+        )}
+      </div>
+
+      <button onClick={() => setShowForm(!showForm)} className="btn btn--primary" style={{marginBottom:16}}>
         {showForm ? 'Cancel' : 'Add Transaction'}
       </button>
 
       {showForm && (
-        <form onSubmit={handleSubmit} style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
+        <form onSubmit={handleSubmit} className="form" style={{ marginBottom: 16 }}>
           <h3>{editingTransaction ? 'Edit Transaction' : 'Add New Transaction'}</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+          <div className="formRow" style={{marginBottom:14}}>
             <div>
               <label>Account:</label>
               <select
                 value={formData.account}
                 onChange={(e) => setFormData({ ...formData, account: e.target.value })}
                 required
-                style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+                
               >
                 <option value="">Select Account</option>
                 {accounts.map((account) => (
@@ -187,7 +195,7 @@ const Transactions: React.FC = () => {
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+                
               >
                 <option value="">Select Category (Optional)</option>
                 {categories.map((category) => (
@@ -198,13 +206,13 @@ const Transactions: React.FC = () => {
               </select>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
+          <div className="formRow" style={{marginBottom:14}}>
             <div>
               <label>Transaction Type:</label>
               <select
                 value={formData.transaction_type}
                 onChange={(e) => setFormData({ ...formData, transaction_type: e.target.value })}
-                style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+                
               >
                 {TRANSACTION_TYPES.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -221,55 +229,42 @@ const Transactions: React.FC = () => {
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 required
-                style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+                
               />
             </div>
           </div>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: 14 }}>
             <label>Description:</label>
             <input
               type="text"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               required
-              style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+              
             />
           </div>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: 14 }}>
             <label>Date:</label>
             <input
               type="date"
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               required
-              style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+              
             />
           </div>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: 14 }}>
             <label>Notes:</label>
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              style={{ width: '100%', padding: '8px', marginTop: '5px', height: '80px' }}
+              
             />
           </div>
-          <button
-            type="submit"
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              marginRight: '10px',
-            }}
-          >
+          <button type="submit" className="btn btn--success" style={{marginRight:8}}>
             {editingTransaction ? 'Update' : 'Create'}
           </button>
-          <button
-            type="button"
-            onClick={() => {
+          <button type="button" className="btn btn--ghost" onClick={() => {
               setShowForm(false);
               setEditingTransaction(null);
               setFormData({
@@ -281,78 +276,39 @@ const Transactions: React.FC = () => {
                 notes: '',
                 date: new Date().toISOString().split('T')[0],
               });
-            }}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
+            }}>
             Cancel
           </button>
         </form>
       )}
 
-      <div style={{ display: 'grid', gap: '15px' }}>
+      <div className="list">
         {transactions.map((transaction) => (
-          <div
-            key={transaction.id}
-            style={{
-              padding: '15px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              backgroundColor: '#f8f9fa',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h4 style={{ margin: '0 0 5px 0' }}>
-                  {transaction.description}
-                </h4>
-                <p style={{ margin: '0 0 10px 0', color: '#666' }}>
-                  {transaction.account_name} • {transaction.category_name || 'No Category'} • {transaction.transaction_type_display}
-                </p>
-                <div style={{ fontSize: '14px', color: '#666' }}>
-                  <span>Amount: ₹{transaction.amount}</span>
-                  <span style={{ marginLeft: '20px' }}>Date: {transaction.date}</span>
-                  {transaction.notes && (
-                    <div style={{ marginTop: '5px' }}>
-                      <strong>Notes:</strong> {transaction.notes}
-                    </div>
-                  )}
+          <div key={transaction.id} className="listItem">
+            <div>
+              <h4 className="listTitle">{transaction.description}</h4>
+              <p className="muted" style={{margin:'0 0 8px 0'}}>
+                {transaction.account_name} • {transaction.category_name || 'No Category'} • {transaction.transaction_type_display}
+              </p>
+              {transaction.notes && (
+                <div className="muted" style={{fontSize:14, marginTop: 5}}>
+                  <strong>Notes:</strong> {transaction.notes}
                 </div>
-              </div>
+              )}
+            </div>
+            <div style={{textAlign:'right'}}>
               <div>
-                <button
-                  onClick={() => handleEdit(transaction)}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#ffc107',
-                    color: 'black',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    marginRight: '5px',
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(transaction.id)}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Delete
-                </button>
+                <span className={`pill ${transaction.transaction_type === 'income' ? 'pill--income' : (transaction.transaction_type === 'expense' ? 'pill--expense' : 'pill--info')}`}>
+                  ₹{transaction.amount}
+                </span>
+              </div>
+              <div className="muted" style={{fontSize:12, marginTop:6}}>{transaction.date}</div>
+              <div style={{marginTop:8}}>
+                <span className="tag">{transaction.transaction_type_display}</span>
+              </div>
+              <div style={{marginTop:8}}>
+                <button onClick={() => handleEdit(transaction)} className="btn" style={{marginRight:8}}>Edit</button>
+                <button onClick={() => handleDelete(transaction.id)} className="btn btn--danger">Delete</button>
               </div>
             </div>
           </div>

@@ -13,25 +13,30 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, currentPage, onPageChan
 
   return (
     <nav style={{
-      backgroundColor: '#343a40',
+      background:
+        'linear-gradient(135deg, rgba(91,140,255,0.95), rgba(124,91,255,0.95))',
       color: 'white',
-      padding: '10px 20px',
+      padding: '12px 20px',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      position: 'sticky',
+      top: 0,
+      zIndex: 20,
+      boxShadow: '0 6px 24px rgba(0,0,0,0.25)'
     }}>
       <div>
-        <h3 style={{ margin: 0 }}>Expense Tracker</h3>
+        <h3 style={{ margin: 0, letterSpacing: 0.3 }}>SpendWise</h3>
       </div>
-      <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         <button
           onClick={() => onPageChange('dashboard')}
           style={{
-            background: currentPage === 'dashboard' ? '#007bff' : 'transparent',
+            background: currentPage === 'dashboard' ? 'rgba(255,255,255,0.2)' : 'transparent',
             color: 'white',
-            border: '1px solid white',
-            padding: '8px 16px',
-            borderRadius: '4px',
+            border: '1px solid rgba(255,255,255,0.5)',
+            padding: '8px 14px',
+            borderRadius: '999px',
             cursor: 'pointer',
           }}
         >
@@ -40,11 +45,11 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, currentPage, onPageChan
         <button
           onClick={() => onPageChange('transactions')}
           style={{
-            background: currentPage === 'transactions' ? '#007bff' : 'transparent',
+            background: currentPage === 'transactions' ? 'rgba(255,255,255,0.2)' : 'transparent',
             color: 'white',
-            border: '1px solid white',
-            padding: '8px 16px',
-            borderRadius: '4px',
+            border: '1px solid rgba(255,255,255,0.5)',
+            padding: '8px 14px',
+            borderRadius: '999px',
             cursor: 'pointer',
           }}
         >
@@ -53,11 +58,11 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, currentPage, onPageChan
         <button
           onClick={() => onPageChange('accounts')}
           style={{
-            background: currentPage === 'accounts' ? '#007bff' : 'transparent',
+            background: currentPage === 'accounts' ? 'rgba(255,255,255,0.2)' : 'transparent',
             color: 'white',
-            border: '1px solid white',
-            padding: '8px 16px',
-            borderRadius: '4px',
+            border: '1px solid rgba(255,255,255,0.5)',
+            padding: '8px 14px',
+            borderRadius: '999px',
             cursor: 'pointer',
           }}
         >
@@ -66,26 +71,39 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, currentPage, onPageChan
         <button
           onClick={() => onPageChange('categories')}
           style={{
-            background: currentPage === 'categories' ? '#007bff' : 'transparent',
+            background: currentPage === 'categories' ? 'rgba(255,255,255,0.2)' : 'transparent',
             color: 'white',
-            border: '1px solid white',
-            padding: '8px 16px',
-            borderRadius: '4px',
+            border: '1px solid rgba(255,255,255,0.5)',
+            padding: '8px 14px',
+            borderRadius: '999px',
             cursor: 'pointer',
           }}
         >
           Categories
+        </button>
+        <button
+          onClick={() => onPageChange('insights')}
+          style={{
+            background: currentPage === 'insights' ? 'rgba(255,255,255,0.25)' : 'transparent',
+            color: 'white',
+            border: '1px solid rgba(255,255,255,0.5)',
+            padding: '8px 14px',
+            borderRadius: '999px',
+            cursor: 'pointer',
+          }}
+        >
+          🤖 AI Insights
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span>Welcome, {user.first_name}!</span>
           <button
             onClick={onLogout}
             style={{
-              background: '#dc3545',
+              background: 'rgba(255,255,255,0.15)',
               color: 'white',
-              border: 'none',
-              padding: '8px 16px',
-              borderRadius: '4px',
+              border: '1px solid rgba(255,255,255,0.5)',
+              padding: '8px 14px',
+              borderRadius: '999px',
               cursor: 'pointer',
             }}
           >

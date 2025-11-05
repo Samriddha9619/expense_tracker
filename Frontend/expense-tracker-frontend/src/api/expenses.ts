@@ -62,8 +62,8 @@ export const expensesAPI = {
   },
 
   // Transactions
-  getTransactions: async (): Promise<Transaction[]> => {
-    const response = await api.get('/transactions/');
+  getTransactions: async (url?: string): Promise<Transaction[]> => {
+    const response = await api.get(url || '/transactions/');
     return response.data.results || response.data;
   },
 
@@ -91,6 +91,12 @@ export const expensesAPI = {
 
   getTransactionSummary: async (): Promise<TransactionSummary> => {
     const response = await api.get('/transactions/summary/');
+    return response.data;
+  },
+
+  // AI Insights
+  getAIInsights: async (): Promise<any> => {
+    const response = await api.get('/transactions/ai_insights/');
     return response.data;
   },
 };

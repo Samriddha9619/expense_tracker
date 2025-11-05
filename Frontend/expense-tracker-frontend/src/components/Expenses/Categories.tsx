@@ -66,48 +66,37 @@ const Categories: React.FC = () => {
     }
   };
 
-  if (loading) return <div>Loading categories...</div>;
+  if (loading) return <div className="container">Loading categories...</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Categories</h2>
-      <button
-        onClick={() => setShowForm(!showForm)}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          marginBottom: '20px',
-        }}
-      >
+    <div className="container">
+      <h2 className="pageTitle">Categories</h2>
+      <button onClick={() => setShowForm(!showForm)} className="btn btn--primary" style={{marginBottom:16}}>
         {showForm ? 'Cancel' : 'Add Category'}
       </button>
 
       {showForm && (
-        <form onSubmit={handleSubmit} style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ddd', borderRadius: '4px' }}>
+        <form onSubmit={handleSubmit} className="form" style={{ marginBottom: 16 }}>
           <h3>{editingCategory ? 'Edit Category' : 'Add New Category'}</h3>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: 14 }}>
             <label>Name:</label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              style={{ width: '100%', padding: '8px', marginTop: '5px' }}
+              
             />
           </div>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: 14 }}>
             <label>Description:</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              style={{ width: '100%', padding: '8px', marginTop: '5px', height: '80px' }}
+              
             />
           </div>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: 14 }}>
             <label>Color:</label>
             <input
               type="color"
@@ -116,94 +105,38 @@ const Categories: React.FC = () => {
               style={{ marginTop: '5px' }}
             />
           </div>
-          <button
-            type="submit"
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              marginRight: '10px',
-            }}
-          >
+          <button type="submit" className="btn btn--success" style={{marginRight:8}}>
             {editingCategory ? 'Update' : 'Create'}
           </button>
-          <button
-            type="button"
-            onClick={() => {
+          <button type="button" className="btn btn--ghost" onClick={() => {
               setShowForm(false);
               setEditingCategory(null);
               setFormData({ name: '', description: '', color: '#007bff' });
-            }}
-            style={{
-              padding: '10px 20px',
-              backgroundColor: '#6c757d',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
+            }}>
             Cancel
           </button>
         </form>
       )}
 
-      <div style={{ display: 'grid', gap: '15px' }}>
+      <div className="grid" style={{gap:12}}>
         {categories.map((category) => (
-          <div
-            key={category.id}
-            style={{
-              padding: '15px',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              backgroundColor: '#f8f9fa',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div key={category.id} className="listItem">
+            <div style={{display:'flex', alignItems:'center', gap:12}}>
+              <span className="dot" style={{background: category.color}} />
               <div>
-                <h4 style={{ margin: '0 0 5px 0', color: category.color }}>
-                  {category.name}
-                </h4>
-                <p style={{ margin: '0 0 10px 0', color: '#666' }}>
+                <h4 className="listTitle" style={{marginBottom:4}}>{category.name}</h4>
+                <p className="muted" style={{margin:'0 0 8px 0'}}>
                   {category.description || 'No description'}
                 </p>
-                <div style={{ fontSize: '14px', color: '#666' }}>
+                <div className="muted" style={{fontSize:14}}>
                   <span>Transactions: {category.transaction_count}</span>
                   <span style={{ marginLeft: '20px' }}>Total Spent: ₹{category.total_spent}</span>
                 </div>
               </div>
-              <div>
-                <button
-                  onClick={() => handleEdit(category)}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#ffc107',
-                    color: 'black',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    marginRight: '5px',
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(category.id)}
-                  style={{
-                    padding: '5px 10px',
-                    backgroundColor: '#dc3545',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  Delete
-                </button>
-              </div>
+            </div>
+            <div>
+              <button onClick={() => handleEdit(category)} className="btn" style={{marginRight:8}}>Edit</button>
+              <button onClick={() => handleDelete(category.id)} className="btn btn--danger">Delete</button>
             </div>
           </div>
         ))}

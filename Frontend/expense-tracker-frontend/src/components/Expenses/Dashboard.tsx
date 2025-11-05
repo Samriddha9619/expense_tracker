@@ -27,124 +27,50 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  if (loading) return <div>Loading dashboard...</div>;
+  if (loading) return <div className="container">Loading dashboard...</div>;
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Dashboard</h2>
+    <div className="container">
+      <h2 className="pageTitle">Dashboard</h2>
       
       {summary && (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-          gap: '20px', 
-          marginBottom: '30px' 
-        }}>
-          <div style={{ 
-            padding: '20px', 
-            backgroundColor: '#d4edda', 
-            borderRadius: '8px',
-            border: '1px solid #c3e6cb'
-          }}>
-            <h3 style={{ margin: '0 0 10px 0', color: '#155724' }}>Total Income</h3>
-            <p style={{ margin: '0', fontSize: '32px', fontWeight: 'bold', color: '#155724' }}>
-              ₹{summary.total_income.toFixed(2)}
-            </p>
-            <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#155724' }}>
-              {summary.income_count} transactions
-            </p>
+        <div className="grid grid-auto" style={{marginBottom:20}}>
+          <div className="kpi kpi--success">
+            <h3 className="cardTitle">Total Income</h3>
+            <div className="big">₹{summary.total_income.toFixed(2)}</div>
+            <div className="muted">{summary.income_count} transactions</div>
           </div>
-          
-          <div style={{ 
-            padding: '20px', 
-            backgroundColor: '#f8d7da', 
-            borderRadius: '8px',
-            border: '1px solid #f5c6cb'
-          }}>
-            <h3 style={{ margin: '0 0 10px 0', color: '#721c24' }}>Total Expenses</h3>
-            <p style={{ margin: '0', fontSize: '32px', fontWeight: 'bold', color: '#721c24' }}>
-              ₹{summary.total_expenses.toFixed(2)}
-            </p>
-            <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#721c24' }}>
-              {summary.expense_count} transactions
-            </p>
+          <div className="kpi kpi--danger">
+            <h3 className="cardTitle">Total Expenses</h3>
+            <div className="big">₹{summary.total_expenses.toFixed(2)}</div>
+            <div className="muted">{summary.expense_count} transactions</div>
           </div>
-          
-          <div style={{ 
-            padding: '20px', 
-            backgroundColor: summary.net_amount >= 0 ? '#d4edda' : '#f8d7da', 
-            borderRadius: '8px',
-            border: `1px solid ${summary.net_amount >= 0 ? '#c3e6cb' : '#f5c6cb'}`
-          }}>
-            <h3 style={{ 
-              margin: '0 0 10px 0', 
-              color: summary.net_amount >= 0 ? '#155724' : '#721c24' 
-            }}>
-              Net Amount
-            </h3>
-            <p style={{ 
-              margin: '0', 
-              fontSize: '32px', 
-              fontWeight: 'bold', 
-              color: summary.net_amount >= 0 ? '#155724' : '#721c24' 
-            }}>
-              ₹{summary.net_amount.toFixed(2)}
-            </p>
-            <p style={{ 
-              margin: '5px 0 0 0', 
-              fontSize: '14px', 
-              color: summary.net_amount >= 0 ? '#155724' : '#721c24' 
-            }}>
-              {summary.net_amount >= 0 ? 'Profit' : 'Loss'}
-            </p>
+          <div className={summary.net_amount >= 0 ? 'kpi kpi--success' : 'kpi kpi--danger'}>
+            <h3 className="cardTitle">Net Amount</h3>
+            <div className="big">₹{summary.net_amount.toFixed(2)}</div>
+            <div className="muted">{summary.net_amount >= 0 ? 'Profit' : 'Loss'}</div>
           </div>
-          
-          <div style={{ 
-            padding: '20px', 
-            backgroundColor: '#d1ecf1', 
-            borderRadius: '8px',
-            border: '1px solid #bee5eb'
-          }}>
-            <h3 style={{ margin: '0 0 10px 0', color: '#0c5460' }}>Total Transactions</h3>
-            <p style={{ margin: '0', fontSize: '32px', fontWeight: 'bold', color: '#0c5460' }}>
-              {summary.transaction_count}
-            </p>
-            <p style={{ margin: '5px 0 0 0', fontSize: '14px', color: '#0c5460' }}>
-              All time
-            </p>
+          <div className="kpi kpi--info">
+            <h3 className="cardTitle">Total Transactions</h3>
+            <div className="big">{summary.transaction_count}</div>
+            <div className="muted">All time</div>
           </div>
         </div>
       )}
 
       <div>
-        <h3>Your Accounts</h3>
+        <h3 className="cardTitle" style={{marginBottom:12}}>Your Accounts</h3>
         {accounts.length === 0 ? (
-          <p>No accounts found. Create your first account to start tracking expenses.</p>
+          <p className="muted">No accounts found. Create your first account to start tracking expenses.</p>
         ) : (
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-            gap: '15px' 
-          }}>
+          <div className="grid grid-auto">
             {accounts.map((account) => (
-              <div
-                key={account.id}
-                style={{
-                  padding: '15px',
-                  border: '1px solid #ddd',
-                  borderRadius: '8px',
-                  backgroundColor: '#f8f9fa',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={account.id} className="card pad">
+                <div className="listItem" style={{background:'transparent',padding:0,border:'none'}}>
                   <div>
-                    <h4 style={{ margin: '0 0 5px 0' }}>
-                      {account.name}
-                    </h4>
-                    <p style={{ margin: '0 0 10px 0', color: '#666' }}>
-                      {account.account_type_display}
-                    </p>
-                    <div style={{ fontSize: '14px', color: '#666' }}>
+                    <h4 className="listTitle">{account.name}</h4>
+                    <p className="muted" style={{margin:'0 0 8px 0'}}>{account.account_type_display}</p>
+                    <div className="muted" style={{fontSize:14}}>
                       <div>Balance: <strong>₹{account.balance}</strong></div>
                       <div>Transactions: {account.transaction_count}</div>
                       <div>Status: {account.is_active ? 'Active' : 'Inactive'}</div>

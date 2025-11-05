@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 from django.contrib.auth import get_user_model
 
 User =get_user_model()
@@ -43,17 +42,17 @@ class Account(models.Model):
 
     def calculate_balance(self):
         """Calculate the current balance based on transactions"""
-        # Only calculate if account already exists (has an ID)
         if not self.pk:
             return 0.00
         
         from django.db.models import Sum
         income = self.transactions.filter(transaction_type='income').aggregate(Sum('amount'))['amount__sum'] or 0
         expenses = self.transactions.filter(transaction_type='expense').aggregate(Sum('amount'))['amount__sum'] or 0
-        return float(income - expenses)
+        # Treat transfers as expenses (money leaving this account)
+        transfers_out = self.transactions.filter(transaction_type='transfer').aggregate(Sum('amount'))['amount__sum'] or 0
+        return float(income - expenses - transfers_out)
     
     def save(self, *args, **kwargs):
-        # Only update balance if account already exists
         if self.pk:
             self.balance = self.calculate_balance()
         super().save(*args, **kwargs)
