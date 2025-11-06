@@ -53,7 +53,7 @@ const AIInsights: React.FC = () => {
   return (
     <div className="container">
       <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-        <h2 className="pageTitle">🤖 AI Financial Insights</h2>
+        <h2 className="pageTitle">💡 Financial Insights</h2>
         <button
           onClick={fetchInsights}
           disabled={loading}

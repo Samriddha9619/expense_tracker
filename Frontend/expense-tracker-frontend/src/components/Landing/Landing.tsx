@@ -13,7 +13,7 @@ const Landing: React.FC<LandingProps> = ({ onLoginClick, onRegisterClick }) => {
       <header className="landing__nav">
         <div className="landing__brand">
           <img src={logo} className="landing__logo" alt="logo" />
-          <span>SpendWise</span>
+          <span>Expense Tracker</span>
         </div>
         <div className="landing__actions">
           <button className="btn btn--ghost" onClick={onLoginClick}>Log in</button>
@@ -76,7 +76,7 @@ const Landing: React.FC<LandingProps> = ({ onLoginClick, onRegisterClick }) => {
         </div>
         <div className="feature">
           <div className="feature__icon">🤖</div>
-          <h3>AI-powered insights</h3>
+          <h3>Smart Insights</h3>
           <p>Personalized, actionable tips to reduce spending and build your emergency fund faster.</p>
         </div>
         <div className="feature">

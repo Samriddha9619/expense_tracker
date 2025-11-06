@@ -26,7 +26,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, currentPage, onPageChan
       boxShadow: '0 6px 24px rgba(0,0,0,0.25)'
     }}>
       <div>
-        <h3 style={{ margin: 0, letterSpacing: 0.3 }}>SpendWise</h3>
+        <h3 style={{ margin: 0, letterSpacing: 0.3 }}>Expense Tracker</h3>
       </div>
       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
         <button
@@ -92,7 +92,7 @@ const Navbar: React.FC<NavbarProps> = ({ user, onLogout, currentPage, onPageChan
             cursor: 'pointer',
           }}
         >
-          🤖 AI Insights
+          💡 Insights
         </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <span>Welcome, {user.first_name}!</span>

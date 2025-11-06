@@ -39,13 +39,11 @@ function App() {
 
   const handleLogin = (userData: User) => {
     setUser(userData);
-    setShowRegister(false);
     setShowAuthModal(false);
   };
 
   const handleRegister = (userData: User) => {
     setUser(userData);
-    setShowRegister(false);
     setShowAuthModal(false);
   };
 
